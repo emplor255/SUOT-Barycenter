@@ -23,16 +23,17 @@ pip install -r requirements.txt
 To draw the barycenter in Section 5, run this jupyter notebook:
 
 ```
-SUOT-Based Barycenter/visualize.ipynb
+/SUOT-Based Barycenter/visualize.ipynb
 ```
 
 2. Estimate convergence
 
-To estimate convergence of optimization methods
+To estimate convergence of optimization methods, run this Python file
 
 ``` 
-cd SUOT-Based Barycenter
-python estimate_convergence.py
+/SUOT-Based Barycenter/estimate_convergence.py
 ```
+
+##Reference
 
 

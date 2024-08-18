@@ -18,7 +18,7 @@ pip install -r requirements.txt
 ```
 
 ## Running the codes
-# Drawing barrycenter 
+1. Drawing barrycenter 
 
 To draw the barycenter in Section 5, run this jupyter notebook:
 
@@ -26,7 +26,7 @@ To draw the barycenter in Section 5, run this jupyter notebook:
 SUOT-Based Barycenter/visualize.ipynb
 ```
 
-# Estimate convergence
+2. Estimate convergence
 
 To estimate convergence of optimization methods
 

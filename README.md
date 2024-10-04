@@ -18,7 +18,7 @@ pip install -r requirements.txt
 ```
 
 ## Running the codes
-1. Drawing barrycenter 
+1. Drawing barycenter 
 
 To draw the barycenter in Section 5, run this jupyter notebook:
 

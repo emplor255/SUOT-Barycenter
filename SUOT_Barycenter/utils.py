@@ -123,7 +123,8 @@ def constant_speed_geodesic(A, B, num_steps, epsilon):
 
 
 def gradient_trace(Sigma_beta):
-    return 8 * torch.square(Sigma_beta)
+    d = len(Sigma_beta)
+    return 2 * torch.eye(d)
 
 def gradient_trace_2(Sigma_alpha, Sigma_beta, tau):
     d = len(Sigma_alpha)
@@ -134,15 +135,14 @@ def gradient_trace_2(Sigma_alpha, Sigma_beta, tau):
     Sigma_beta_alpha_tau_square = term @ term + 2 * tau * term
     Sigma_beta_alpha_tau = square_root(Sigma_beta_alpha_tau_square)
 
-    M = square_root(inv(Sigma_alpha_tau)) @ inv(Sigma_beta_alpha_tau) @ square_root(inv(Sigma_alpha_tau)) 
+    M = square_root(inv(Sigma_alpha_tau)) @ inv(Sigma_beta_alpha_tau) @ square_root(inv(Sigma_alpha_tau))
     U = inv(Sigma_alpha_tau) @ Sigma_beta @ M + M @ Sigma_beta @ inv(Sigma_alpha_tau)
 
-    result1 = inv(Sigma_alpha_tau) @ Sigma_beta + Sigma_beta @ inv(Sigma_alpha_tau) 
-    result2 = Sigma_beta @ (Sigma_beta @ (U + tau* M) + (U+tau*M)@Sigma_beta)
-    result = 2 * result1 + 1/2 * result2
+    result1 = inv(Sigma_alpha_tau)
+    result2 = U + tau * M
+    result =  result1 + 1 / 2 * result2
 
     return result
-
 
 def gradient_logdet(Sigma_alpha, Sigma_beta, tau):
     d = len(Sigma_alpha)
@@ -152,11 +152,11 @@ def gradient_logdet(Sigma_alpha, Sigma_beta, tau):
     term = square_root(Sigma_alpha_tau) @ inv(Sigma_beta) @ square_root(Sigma_alpha_tau)
     V = square_root(torch.eye(d) + tau * term)
 
-    P = inv(Sigma_beta) @ square_root(Sigma_alpha_tau) @ inv(torch.eye(d) + V) @ square_root(Sigma_alpha_tau)
-    Q = square_root(Sigma_alpha_tau) @ inv(torch.eye(d) +V) @ square_root(Sigma_alpha_tau) @ inv(Sigma_beta)
+    P = inv(Sigma_beta) @ square_root(Sigma_alpha_tau) @ inv(torch.eye(d) + V) @ square_root(Sigma_alpha_tau) @ inv(Sigma_beta)
+    Q = square_root(Sigma_alpha_tau) @ inv(torch.eye(d) + V) @ square_root(Sigma_alpha_tau) @ inv(Sigma_beta) @ inv(Sigma_beta)
 
-    result1 = -12 * Sigma_beta 
-    result2 = -4*tau* ((P+Q) @ Sigma_beta + Sigma_beta @ (P+Q))
+    result1 = -6 * inv(Sigma_beta)
+    result2 = -2 * tau * (P + Q)
 
     result = result1 + result2
     return result

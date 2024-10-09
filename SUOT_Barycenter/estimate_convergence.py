@@ -130,31 +130,9 @@ def constant_speed_geodesic(A, B, num_steps, epsilon):
 
 # Gradient Functions
 
-
-# def gradient_trace(Sigma_beta):
-#     return 8 * torch.square(Sigma_beta)
-
 def gradient_trace(Sigma_beta):
     d = len(Sigma_beta)
     return 2 * torch.eye(d)
-
-# def gradient_trace_2(Sigma_alpha, Sigma_beta, tau):
-#     d = len(Sigma_alpha)
-#     Sigma_alpha_tau = (torch.eye(d, device=device) + (tau / 2) * inv(Sigma_alpha)).type(torch.complex64)
-#     Sigma_beta = Sigma_beta.type(torch.complex64)
-
-#     term = square_root(inv(Sigma_alpha_tau)) @ Sigma_beta @ square_root(inv(Sigma_alpha_tau))
-#     Sigma_beta_alpha_tau_square = term @ term + 2 * tau * term
-#     Sigma_beta_alpha_tau = square_root(Sigma_beta_alpha_tau_square)
-
-#     M = square_root(inv(Sigma_alpha_tau)) @ inv(Sigma_beta_alpha_tau) @ square_root(inv(Sigma_alpha_tau))
-#     U = inv(Sigma_alpha_tau) @ Sigma_beta @ M + M @ Sigma_beta @ inv(Sigma_alpha_tau)
-
-#     result1 = inv(Sigma_alpha_tau) @ Sigma_beta + Sigma_beta @ inv(Sigma_alpha_tau)
-#     result2 = Sigma_beta @ (Sigma_beta @ (U + tau * M) + (U + tau * M) @ Sigma_beta)
-#     result = 2 * result1 + 1 / 2 * result2
-
-#     return result
 
 def gradient_trace_2(Sigma_alpha, Sigma_beta, tau):
     d = len(Sigma_alpha)
@@ -174,31 +152,12 @@ def gradient_trace_2(Sigma_alpha, Sigma_beta, tau):
 
     return result
 
-
-# def gradient_logdet(Sigma_alpha, Sigma_beta, tau):
-#     d = len(Sigma_alpha)
-#     Sigma_alpha_tau = (torch.eye(d, device=device) + (tau / 2) * inv(Sigma_alpha)).type(torch.complex64)
-#     Sigma_beta = Sigma_beta.type(torch.complex64)
-
-#     term = square_root(Sigma_alpha_tau) @ inv(Sigma_beta) @ square_root(Sigma_alpha_tau)
-#     V = square_root(torch.eye(d, device=device) + tau * term)
-
-#     P = inv(Sigma_beta) @ square_root(Sigma_alpha_tau) @ inv(torch.eye(d, device=device) + V) @ square_root(Sigma_alpha_tau)
-#     Q = square_root(Sigma_alpha_tau) @ inv(torch.eye(d, device=device) + V) @ square_root(Sigma_alpha_tau) @ inv(Sigma_beta)
-
-#     result1 = -12 * Sigma_beta
-#     result2 = -4 * tau * ((P + Q) @ Sigma_beta + Sigma_beta @ (P + Q))
-
-#     result = result1 + result2
-#     return result
-
 def gradient_logdet(Sigma_alpha, Sigma_beta, tau):
     d = len(Sigma_alpha)
     Sigma_alpha_tau = (torch.eye(d) + (tau / 2) * inv(Sigma_alpha)).type(torch.complex64)
     Sigma_beta = Sigma_beta.type(torch.complex64)
 
     term = square_root(Sigma_alpha_tau) @ inv(Sigma_beta) @ square_root(Sigma_alpha_tau)
-    #print(term)
     V = square_root(torch.eye(d) + tau * term)
 
     P = inv(Sigma_beta) @ square_root(Sigma_alpha_tau) @ inv(torch.eye(d) + V) @ square_root(Sigma_alpha_tau) @ inv(Sigma_beta)
@@ -512,49 +471,25 @@ if __name__ == "__main__":
     Sigma_beta_0_torch = torch.eye(num_dimensions)
 
     # Compute the Bures UOT barycenter using PyTorch
-    result_matric_1, loss_1 = Bures_manifold_UOT_bary_gradientmethod_exactgrad_SGD(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.5, early_stop = True)
-    # result_matric_5, loss_5 = Bures_manifold_UOT_bary_gradientmethod_exactgrad(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.2, early_stop = True)
-    # result_matric_6, loss_6 = Bures_manifold_UOT_bary_gradientmethod_exactgrad(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.5, early_stop = True)
-    # result_matric_7, loss_7 = Bures_manifold_UOT_bary_gradientmethod_exactgrad(covariance_matrices_torch, Sigma_beta_0_torch, eta = 1, early_stop = True)
-    result_matric_2, loss_2 = Bures_manifold_UOT_bary_gradientmethod_autograd_SGD(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.5)
-    result_matric_3, loss_3 = Bures_manifold_UOT_bary_gradientmethod_autograd_momentum_SGD(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.5)
+    result_matric_1, loss_1 = Bures_manifold_UOT_bary_gradientmethod_exactgrad_SGD(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.2, early_stop = True)
+    result_matric_2, loss_2 = Bures_manifold_UOT_bary_gradientmethod_autograd_SGD(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.2)
+    result_matric_3, loss_3 = Bures_manifold_UOT_bary_gradientmethod_autograd_momentum_SGD(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.2)
     result_matric_4, loss_4 = Bures_manifold_UOT_bary_hybridmethod_SGD(covariance_matrices_torch, Sigma_beta_0_torch, eta = 1, early_stop = True)
-    # result_matric_8, loss_8 = Bures_manifold_UOT_bary_hybridmethod(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.2, early_stop = True)
-    # result_matric_9, loss_9 = Bures_manifold_UOT_bary_hybridmethod(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.5, early_stop = True)
-    # result_matric_10, loss_10 = Bures_manifold_UOT_bary_hybridmethod(covariance_matrices_torch, Sigma_beta_0_torch, eta = 1, early_stop = True)
-    # result_matric_11, loss_11 = Bures_manifold_UOT_bary_hybridmethod(covariance_matrices_torch, Sigma_beta_0_torch, eta = 1.2, early_stop = True)
     
     loss_1 = [tensor.detach() for tensor in loss_1]
     loss_2 = [tensor.detach() for tensor in loss_2]
     loss_3 = [tensor.detach() for tensor in loss_3]
     loss_4 = [tensor.detach() for tensor in loss_4]
-    # loss_5 = [tensor.detach() for tensor in loss_5]
-    # loss_6 = [tensor.detach() for tensor in loss_6]
-    # loss_7 = [tensor.detach() for tensor in loss_7]
-    # loss_8 = [tensor.detach() for tensor in loss_8]
-    # loss_9 = [tensor.detach() for tensor in loss_9]
-    # loss_10 = [tensor.detach() for tensor in loss_10]
-    # loss_11 = [tensor.detach() for tensor in loss_11]
 
     # Create a list of iteration numbers for x-axis
     iterations_1 = list(range(1, len(loss_1) + 1))
     iterations_2 = list(range(1, len(loss_2) + 1))
     iterations_3 = list(range(1, len(loss_3) + 1))
     iterations_4 = list(range(1, len(loss_4) + 1))
-    # iterations_5 = list(range(1, len(loss_5) + 1))
-    # iterations_6 = list(range(1, len(loss_6) + 1))
-    # iterations_7 = list(range(1, len(loss_7) + 1))
-    # iterations_8 = list(range(1, len(loss_8) + 1))
-    # iterations_9 = list(range(1, len(loss_9) + 1))
-    # iterations_10 = list(range(1, len(loss_10) + 1))
-    # iterations_11 = list(range(1, len(loss_11) + 1))
 
 
     # Determine the maximum iteration value to set the x-axis limits
     max_iterations = max(len(loss_1), len(loss_2), len(loss_3), len(loss_4))
-    #max_iterations = max(len(loss_4),len(loss_8),len(loss_9),len(loss_10), len(loss_11))
-    #max_iterations = max(len(loss_1), len(loss_4))
-    #max_iterations = len(loss_1)
 
     # Plotting
     plt.figure(figsize=(10, 6))
@@ -562,13 +497,6 @@ if __name__ == "__main__":
     plt.plot(iterations_2, loss_2, marker='s', label='Auto SGD')
     plt.plot(iterations_3, loss_3, marker='s', label='Auto SGD + Momentum')
     plt.plot(iterations_4, loss_4, marker='s', label=f'Hybrid SGD')
-    #plt.plot(iterations_5, loss_5, marker='s', color = 'lightskyblue', label=f'Exact Geodesic GD, $\eta = 0.2$')
-    #plt.plot(iterations_6, loss_6, marker='s', color = 'steelblue',label=f'Exact Geodesic GD, $\eta = 0.5$')
-    #plt.plot(iterations_7, loss_7, marker='s', color = 'darkslateblue', label=f'Exact Geodesic GD, $\eta = 1$')
-    # plt.plot(iterations_8, loss_8, marker='s', color = 'orangered', label=f'Hybrid GD, $\eta = 0.2$')
-    # plt.plot(iterations_9, loss_9, marker='s', color = 'indianred', label=f'Hybrid GD, $\eta = 0.5$')
-    # plt.plot(iterations_10, loss_10, marker='s', color = 'crimson', label=f'Hybrid GD, $\eta = 1.0$')
-    # plt.plot(iterations_11, loss_11, marker='s', color = 'maroon',label=f'Hybrid GD, $\eta = 1.2$')
     
 
     # Labels and title
@@ -583,12 +511,5 @@ if __name__ == "__main__":
 
     # Display the plot
     plt.grid(True)
-    plt.savefig("Image/chart_rate_SGD(0.5).png")
+    plt.savefig("Image/chart_rate_SGD(0.2).png")
     plt.show()
-
-    #print(loss_1[-1])
-
-    # result_matric_1, loss_1 = Bures_manifold_UOT_bary_gradientmethod_exactgrad(covariance_matrices_torch, Sigma_beta_0_torch, eta = 0.1)
-    # print(loss_1[-1])
-    # result_matric_4, loss_4 = Bures_manifold_UOT_bary_hybridmethod(covariance_matrices_torch, result_matric_1, eta = 0.1)
-    # print(loss_4[-1])

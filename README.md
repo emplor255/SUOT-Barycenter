@@ -34,6 +34,4 @@ To estimate convergence of optimization methods, run this Python file
 /SUOT-Based Barycenter/estimate_convergence.py
 ```
 
-##Reference
-
 

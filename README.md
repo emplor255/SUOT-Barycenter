@@ -1,5 +1,5 @@
 # On Barycenter Computation: Semi-Unbalanced Optimal Transport-Based Method on Gaussians
-This repository is the official implementation of [On Barycenter Computation: Semi-Unbalanced Optimal Transport-Based Method on Gaussians]
+This is the official implementation of [On Barycenter Computation: Semi-Unbalanced Optimal Transport-Based Method on Gaussians]
 
 
 ## Installation
